@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+/* Base Styles */
+@layer base {
+  :root {
+    cursor: default;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--text-primary);
+    background-color: var(--background);
+
+    --animate-glow: glow 1.5s infinite alternate ease-in-out;
+    --animate-gradient: gradient 3s ease infinite;
+  }
+
+  .gradient-animation {
+    background-size: 200% 200%;
+    animation: var(--animate-gradient);
+  }
+
+  /* Light Theme */
+  .light {
+    --background: rgba(247, 245, 242, 1);
+    --primary: rgb(255, 217, 178, 1);
+    --secondary: rgb(204, 204, 184, 1);
+    --accent: rgba(6, 63, 91, 1);
+    --highlight: rgba(255, 181, 167, 1);
+    --warning: rgba(255, 107, 107, 1);
+    --success: rgba(155, 239, 138, 1);
+    --text-primary: rgb(64, 61, 57, 1);
+    --text-secondary: rgb(58, 56, 62, 1);
+    --shadow: rgba(64, 61, 57, 0.1);
+  }
+
+  /* Dark Theme */
+  .dark {
+    --background: rgba(18, 18, 18, 1);
+    --primary: rgba(30, 136, 229, 1);
+    --secondary: rgba(187, 134, 252, 1);
+    --accent: rgba(3, 218, 198, 1);
+    --highlight: rgba(255, 64, 129, 1);
+    --warning: rgba(255, 82, 82, 1);
+    --success: rgba(76, 175, 80, 1);
+    --text-primary: rgba(224, 224, 224, 1);
+    --text-secondary: rgba(176, 190, 197, 1);
+    --shadow: rgba(224, 224, 224, 0.1);
+  }
+
+  /* Funky Theme */
+  .funky {
+    --background: rgba(54, 0, 92, 1);
+    --primary: rgba(138, 43, 226, 1);
+    --secondary: rgba(255, 0, 127, 1);
+    --accent: rgba(0, 229, 255, 1);
+    --highlight: rgba(195, 204, 239, 1);
+    --warning: rgba(255, 69, 0, 1);
+    --success: rgba(255, 215, 0, 1);
+    --text-primary: rgba(255, 255, 255, 1);
+    --text-secondary: rgba(204, 204, 204, 1);
+    --shadow: rgba(255, 255, 255, 0.1);
+  }
+
+  button {
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease-in-out;
+
+    &:hover {
+      background: var(--highlight);
+    }
+  }
+}
+
+/* Apply Colors in Tailwind */
+@layer utilities {
+  .bg-theme {
+    background-color: var(--background);
+  }
+
+  .text-theme-primary {
+    color: var(--text-primary);
+  }
+
+  .text-theme-secondary {
+    color: var(--text-secondary);
+  }
+
+  .nav-link {
+    cursor: pointer;
+    color: var(--secondary);
+    font-weight: 600;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: var(--highlight);
+    }
+  }
+
+  .link {
+    cursor: pointer;
+    color: var(--accent);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .btn-sq {
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    padding: 5px;
+  }
+
+  .btn {
+    cursor: pointer;
+    border-radius: 5px;
+    padding-inline: 10px;
+    padding-block: 5px;
+    font-weight: 600;
+  }
+
+  .btn-primary {
+    background-color: var(--primary);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary {
+    background-color: var(--secondary);
+    color: var(--text-primary);
+  }
+
+  .shadow-custom {
+    box-shadow:
+      0 10px 15px -3px var(--shadow),
+      0 4px 6px -4px var(--shadow);
+  }
+}
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  }
+
+  100% {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
