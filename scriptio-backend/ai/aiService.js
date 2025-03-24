@@ -27,7 +27,6 @@ const getAIScript = async (prompt) => {
     if (isUnexpected(response)) {
       throw response.body.error;
     }
-    console.log(response.body);
 
     const match = response.body.choices[0].message.content.match(/Title: (.*)/);
     const title = match[1].substring(0, match[1].length - 2);

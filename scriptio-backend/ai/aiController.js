@@ -5,7 +5,6 @@ const puppeteer = require('puppeteer');
 
 const generateScript = async (req, res) => {
   const { prompt } = req.body;
-  console.log(prompt);
 
   try {
     const script = await getAIScript(prompt);
@@ -87,15 +86,12 @@ const deleteScript = async (req, res) => {
 
 const generateScriptPDF = async (req, res) => {
   try {
-    console.log("Launching Puppeteer...");
     const browser = await puppeteer.launch({
       headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"]
     });
-    console.log("Puppeteer launched!");
 
     const page = await browser.newPage();
-    console.log("New page created.");
 
     const { html } = req.body;
     if (!html) {
@@ -103,11 +99,9 @@ const generateScriptPDF = async (req, res) => {
       return res.status(400).json({ error: "Missing HTML content in request body" });
     }
 
-    console.log("Setting page content...");
     await page.setContent(html, { waitUntil: "networkidle0" });
     await page.emulateMediaType("screen");
 
-    console.log("Generating PDF...");
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
@@ -123,10 +117,8 @@ const generateScriptPDF = async (req, res) => {
       throw new Error("Generated PDF is empty or too small");
     }
 
-    console.log("Closing browser...");
     await browser.close();
 
-    console.log("Sending PDF...");
     res.setHeader("Content-Disposition", 'attachment; filename="document.pdf"');
     res.setHeader("Content-Type", "application/pdf");  // ✅ Ensure correct Content-Type
     res.setHeader("Content-Length", pdfBuffer.length); // ✅ Set Content-Length explicitly

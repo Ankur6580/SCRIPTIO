@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const generateToken = async (id) => {
   try {
     if (!id) {
-      console.log("Invalid user details");
       return null;
     }
 
