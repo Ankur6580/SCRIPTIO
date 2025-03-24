@@ -4,13 +4,12 @@ const express = require("express");
 const app = express();
 app.use(cors());
 app.use(express.json());
-const fs = require("fs");
 
-if (!fs.existsSync("/data")) {
-  fs.mkdirSync("/data", { recursive: true });
-  console.log("✅ /data directory created.");
-} else {
-  console.log("✅ /data directory already exists.");
+const fs = require("fs");
+const path = "/tmp";
+
+if (!fs.existsSync(path)) {
+  fs.mkdirSync(path, { recursive: true });
 }
 
 const authRouter = require("./auth/authRoutes");
