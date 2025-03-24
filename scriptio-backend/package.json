@@ -6,7 +6,8 @@
     "start": "node server.js",
     "build": "node build.js",
     "testBuild": "npm install && node build.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "checkDeps": "[ -d node_modules ] && [ -d node_modules/prisma ] && echo 'Dependencies exist' || echo 'Missing dependencies, running npm install' && npm install"
   },
   "keywords": [],
   "author": "",
