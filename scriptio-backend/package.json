@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "build": "node build.js",
-    "testBuild": "npm install && chmod -R 777 node_modules/.prisma && node build.js",
+    "testBuild": "npm install && node build.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],
