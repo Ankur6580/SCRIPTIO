@@ -1,7 +1,8 @@
-const { getAIScript } = require('./aiService');
-const { PrismaClient } = require("@prisma/client")
-const prisma = new PrismaClient()
-const puppeteer = require('puppeteer');
+const { getAIScript } = require("./aiService");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+const puppeteer = require("puppeteer");
+const chromium = require("@sparticuz/chromium");
 
 const generateScript = async (req, res) => {
   const { prompt } = req.body;
@@ -13,7 +14,7 @@ const generateScript = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 const saveScript = async (req, res) => {
   const userID = req.body.userID;
@@ -25,39 +26,39 @@ const saveScript = async (req, res) => {
       data: {
         userId: userID,
         title: title,
-        content: script
+        content: script,
       },
       select: {
         id: true,
         title: true,
         content: true,
-        userId: true
-      }
+        userId: true,
+      },
     });
-    res.status(200).json({ "message": "Script saved", newScript });
+    res.status(200).json({ message: "Script saved", newScript });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 const getAllScripts = async (req, res) => {
-  const userID = req.params.userID
+  const userID = req.params.userID;
   try {
     const scripts = await prisma.script.findMany({
       where: {
-        userId: userID
+        userId: userID,
       },
       select: {
         id: true,
         title: true,
-        content: true
-      }
-    })
-    res.json({ scripts })
+        content: true,
+      },
+    });
+    res.json({ scripts });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 const deleteScript = async (req, res) => {
   const scriptID = req.params.scriptID;
@@ -85,22 +86,30 @@ const deleteScript = async (req, res) => {
 };
 
 const generateScriptPDF = async (req, res) => {
+  let browser;
   try {
-    const browser = await puppeteer.launch({
+    const { html } = req.body;
+    if (!html || typeof html !== "string" || html.length < 10) {
+      // Minimum length check
+      return res.status(400).json({
+        error: "Invalid HTML content",
+        received: html ? `Type: ${typeof html}, Length: ${html.length}` : "No HTML received",
+      });
+    }
+
+    const isProduction = process.env.NODE_ENV === "production";
+    browser = await puppeteer.launch({
+      args: ["--disable-dev-shm-usage", "--no-sandbox", ...(isProduction ? chromium.args : [])],
+      executablePath: isProduction ? await chromium.executablePath() : puppeteer.executablePath(),
       headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"]
     });
 
     const page = await browser.newPage();
 
-    const { html } = req.body;
-    if (!html) {
-      console.error("No HTML content received!");
-      return res.status(400).json({ error: "Missing HTML content in request body" });
-    }
-
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    await page.emulateMediaType("screen");
+    await page.setContent(html, {
+      waitUntil: ["domcontentloaded", "networkidle0"],
+      timeout: 30000,
+    });
 
     const pdfBuffer = await page.pdf({
       format: "A4",
@@ -109,28 +118,26 @@ const generateScriptPDF = async (req, res) => {
         top: "20mm",
         bottom: "20mm",
         left: "20mm",
-        right: "20mm"
-      }
+        right: "20mm",
+      },
+      timeout: 60000,
     });
 
-    if (!pdfBuffer || pdfBuffer.length < 100) {
-      throw new Error("Generated PDF is empty or too small");
-    }
-
-    await browser.close();
-
-    res.setHeader("Content-Disposition", 'attachment; filename="document.pdf"');
-    res.setHeader("Content-Type", "application/pdf");  // ✅ Ensure correct Content-Type
-    res.setHeader("Content-Length", pdfBuffer.length); // ✅ Set Content-Length explicitly
-    res.end(pdfBuffer,"binary");
-
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(pdfBuffer);
   } catch (error) {
-    console.error("Error generating PDF:", error);
-    res.status(500).json({ error: error.message });
+    console.error("PDF Generation Error Details:", {
+      message: error.message,
+      stack: error.stack,
+      bodyContent: req.body.html?.substring(0, 100),
+    });
+    res.status(500).json({
+      error: "PDF generation failed",
+      details: error.message,
+    });
+  } finally {
+    if (browser) await browser.close();
   }
 };
-
-
-
 
 module.exports = { generateScript, getAllScripts, saveScript, deleteScript, generateScriptPDF };
