@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "checkDeps": "[ -d node_modules ] && [ -d node_modules/prisma ] && echo 'Dependencies exist' || (echo 'Missing dependencies, running npm install' && npm install)",
+    "checkDeps": "[ -d node_modules ] && [ -d node_modules/prisma ] && echo 'Dependencies exist' || (echo 'Missing dependencies, running npm install' && npm install --verbose)",
     "build": "node build.js",
     "start": "node server.js",
     "dev": "nodemon server.js"
