@@ -5,13 +5,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const fs = require("fs");
-const path = "/tmp";
-
-if (!fs.existsSync(path)) {
-  fs.mkdirSync(path, { recursive: true });
-}
-
 app.get("/scriptio-health-check", (req, res) => {
   res.status(200).send("OK");
 });
