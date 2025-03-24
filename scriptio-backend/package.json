@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "checkDeps": "[ -d node_modules ] && [ -d node_modules/prisma ] && echo 'Dependencies exist' || (echo 'Missing dependencies, running npm install' && npm install)",
     "build": "node build.js",
-    "testBuild": "npm install && node build.js",
-    "dev": "nodemon server.js",
-    "checkDeps": "[ -d node_modules ] && [ -d node_modules/prisma ] && echo 'Dependencies exist' || echo 'Missing dependencies, running npm install' && npm install"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
