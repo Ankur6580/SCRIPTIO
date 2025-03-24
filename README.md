@@ -34,7 +34,7 @@ AI Video Script Generator is a full-stack web application that allows users to g
 
 ## Project Structure
 ```
-ai-video-script-generator
+SCRIPTIO
 ├─ README.md
 ├─ scriptio-backend
 │  ├─ ai
