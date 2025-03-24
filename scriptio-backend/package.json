@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "build": "rm -rf node_modules/@prisma node_modules/prisma && npm install && node build.js",
+    "build": "node build.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],
