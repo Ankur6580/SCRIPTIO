@@ -12,6 +12,10 @@ if (!fs.existsSync(path)) {
   fs.mkdirSync(path, { recursive: true });
 }
 
+app.get("/scriptio-health-check", (req, res) => {
+  res.status(200).send("OK");
+});
+
 const authRouter = require("./auth/authRoutes");
 app.use("/api/auth", authRouter);
 
