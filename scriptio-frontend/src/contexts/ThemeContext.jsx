@@ -4,7 +4,7 @@ export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const savedTheme = localStorage.getItem("theme");
-  const [themeMode, setThemeMode] = useState(savedTheme);
+  const [themeMode, setThemeMode] = useState(savedTheme || "light");
 
   const lightTheme = () => {
     setThemeMode("light");

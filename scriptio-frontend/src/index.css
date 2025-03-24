@@ -90,7 +90,7 @@
     cursor: pointer;
     color: var(--secondary);
     font-weight: 600;
-    transition: color 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
 
     &:hover {
       color: var(--highlight);
@@ -120,7 +120,7 @@
   }
 
   .btn-primary {
-    background-color: var(--primary);
+    background-color: var(--warning);
     color: var(--text-primary);
   }
 

@@ -17,8 +17,8 @@ const ThemeSwitcher = () => {
       <select
         id="themeSwitch"
         onChange={handleThemeChange}
-        value={themeMode}
-        className={"btn-md nav-link btn border"}
+        value={themeMode || "light"}
+        className={"btn-md nav-link btn border-none bg-slate-900 outline-none"}
       >
         <option value="light">Light</option>
         <option value="dark">Dark</option>

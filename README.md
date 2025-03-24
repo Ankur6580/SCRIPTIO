@@ -11,6 +11,9 @@ AI Video Script Generator is a full-stack web application that allows users to g
 - Light/Dark theme support
 - Responsive and modern UI
 
+## DEMO
+[![Watch the demo](https://img.youtube.com/vi/pdeiObmm17U/maxresdefault.jpg)](https://youtu.be/pdeiObmm17U)
+
 ## Tech Stack
 ### Frontend
 - React 19

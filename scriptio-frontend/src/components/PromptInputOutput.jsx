@@ -72,7 +72,7 @@ const PromptInputOutput = ({ user }) => {
             },
             body: JSON.stringify({
               userID: user.id,
-              title: generatedScriptData.title,
+              title: generatedScriptData.title || prompt,
               script: generatedScriptData.content,
             }),
           });
@@ -132,6 +132,7 @@ const PromptInputOutput = ({ user }) => {
           scripts.map((scriptData) => (
             <Script
               key={scriptData.id}
+              user={user}
               scriptData={scriptData}
               onDelete={(id) =>
                 setScripts((prev) => prev.filter((s) => s.id !== id))
@@ -139,7 +140,7 @@ const PromptInputOutput = ({ user }) => {
             />
           ))
         ) : (
-          <p className="text-center mb-4">
+          <p className="mb-4 text-center">
             Every great story starts with a blank page. Time to write yours!
           </p>
         )}

@@ -6,7 +6,7 @@ import PDFDownloader from "./PDFDownloader";
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-const Scripts = ({ scriptData, onDelete }) => {
+const Scripts = ({ scriptData, onDelete, user }) => {
   const contentRef = useRef();
   const deleteBtnRef = useRef();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -47,15 +47,20 @@ const Scripts = ({ scriptData, onDelete }) => {
         <MDRenderer scriptData={scriptData} ref={contentRef} />
       </div>
 
-      <div id="buttons" className="grid grid-cols-2">
-        <button
-          ref={deleteBtnRef}
-          onClick={handleDelete}
-          className={`flex items-center justify-center gap-2 rounded-bl-md border p-2 transition-all ${confirmDelete ? "bg-opacity-40 animate-pulse" : "hover:bg-opacity-70"}`}
-        >
-          {confirmDelete ? "Confirm Delete?" : "Delete"}
-          <MdDeleteForever className="text-lg" />
-        </button>
+      <div
+        id="buttons"
+        className={`rounded-br-md rounded-bl-md border ${!user ? "block" : "grid grid-cols-2"}`}
+      >
+        {user ? (
+          <button
+            ref={deleteBtnRef}
+            onClick={handleDelete}
+            className={`flex items-center justify-center gap-2 rounded-bl-md p-2 transition-all ${confirmDelete ? "bg-opacity-40 animate-pulse" : "hover:bg-opacity-70"}`}
+          >
+            {confirmDelete ? "Confirm?" : "Delete"}
+            <MdDeleteForever className="text-lg" />
+          </button>
+        ) : null}
 
         <PDFDownloader contentRef={contentRef} />
       </div>

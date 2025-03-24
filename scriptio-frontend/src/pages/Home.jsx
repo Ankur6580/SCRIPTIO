@@ -41,7 +41,7 @@ const Home = ({ user }) => {
         </p>
       </div>
       <br />
-      <div className="flex justify-center gap-2" id="cta">
+      <div className="flex justify-center gap-2 text-center" id="cta">
         <Link
           className="btn btn-primary hover:scale-101 hover:shadow-md"
           to="#"
@@ -49,12 +49,15 @@ const Home = ({ user }) => {
         >
           Generate Script
         </Link>
-        <Link
-          className="btn btn-secondary hover:scale-101 hover:shadow-md"
-          to={"/register"}
-        >
-          Sign Up to Save Scripts
-        </Link>
+
+        {!user && (
+          <Link
+            className="btn btn-secondary hover:scale-101 hover:shadow-md"
+            to={"/register"}
+          >
+            Sign Up to Save Scripts
+          </Link>
+        )}
       </div>
       <br />
       {/* how it works */}

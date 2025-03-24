@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { FaFileDownload } from "react-icons/fa";
 
 const PDFDownloader = ({ contentRef }) => {
   const backendURL = import.meta.env.VITE_BACKEND_URL;
@@ -63,9 +64,16 @@ const PDFDownloader = ({ contentRef }) => {
     <button
       onClick={downloadPDF}
       disabled={loading}
-      className={`rounded-br-md border px-4 py-2 ${loading ? "cursor-not-allowed opacity-70" : ""} `}
+      className={`justify-self-end w-full rounded-br-md px-4 py-2 ${loading ? "cursor-not-allowed opacity-70" : ""} `}
     >
-      {loading ? "Generating PDF..." : "Download as PDF"}
+      {loading ? (
+        "Generating..."
+      ) : (
+        <span className="flex items-center gap-2 justify-self-center">
+          <FaFileDownload />
+          PDF
+        </span>
+      )}
     </button>
   );
 };

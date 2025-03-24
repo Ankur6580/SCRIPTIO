@@ -1,19 +1,11 @@
 import { IoLogOut } from "react-icons/io5";
-import { Link, useNavigate } from "react-router-dom";
-import { scroller } from "react-scroll";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import BrandLogo from "../assets/BrandLogo.svg";
 import ThemeSwitcher from "../components/ThemeSwitcher";
 
 const Navbar = ({ setToken }) => {
-  const handleScrollTo = (sectionId) => (e) => {
-    e.preventDefault();
-    scroller.scrollTo(sectionId, {
-      smooth: true,
-      duration: 500,
-      offset: -70,
-    });
-  };
+  const isHomePage = location.pathname === "/";
 
   const navigate = useNavigate();
 
@@ -30,26 +22,16 @@ const Navbar = ({ setToken }) => {
     <header className="fixed top-0 right-0 left-0 z-50 w-full bg-[#0e1419] p-4 shadow-md md:px-10">
       <nav className="mx-auto flex max-w-250 items-center justify-between gap-2">
         <Link
-          className="nav-link flex items-center gap-1 text-2xl sm:gap-2"
+          className="nav-link flex items-center gap-1 border-none text-2xl outline-none sm:gap-2"
           to="/"
         >
-          <img src={BrandLogo} alt="brand logo" className="max-w-60" />
+          <img
+            src={BrandLogo}
+            alt="brand logo"
+            className="max-w-40 sm:max-w-60"
+          />
         </Link>
-        <ul
-          className="ml-auto hidden items-center gap-2 sm:gap-6 md:flex"
-          id="links"
-        >
-          <li className="nav-link">
-            <Link to="#" onClick={handleScrollTo("features")}>
-              Features
-            </Link>
-          </li>
-          <li className="nav-link">
-            <Link to="#" onClick={handleScrollTo("contact")}>
-              Contact
-            </Link>
-          </li>
-
+        <div className="ml-auto flex items-center gap-2 sm:gap-6" id="links">
           {isTokenAvailable ? (
             <div className="group btn relative text-2xl text-white hover:scale-110">
               <IoLogOut onClick={handleLogout} />
@@ -58,11 +40,13 @@ const Navbar = ({ setToken }) => {
               </span>
             </div>
           ) : (
-            <li className="nav-link btn btn-primary hover:text-amber-600!">
-              <Link to={"./login"}>Login</Link>
-            </li>
+            isHomePage && (
+              <Link className="nav-link btn btn-primary" to={"./login"}>
+                Login
+              </Link>
+            )
           )}
-        </ul>
+        </div>
         <ThemeSwitcher />
       </nav>
     </header>
