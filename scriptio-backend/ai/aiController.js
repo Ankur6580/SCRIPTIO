@@ -88,9 +88,20 @@ const deleteScript = async (req, res) => {
 
 const generateScriptPDF = async (req, res) => {
   try {
+    let executablePath = await chromium.executablePath();
+    let args = chromium.args;
+    const isDev = process.env.NODE_ENV !== "production";
+
+    if (isDev) {
+      const puppeteerLocal = require("puppeteer");
+      executablePath = puppeteerLocal.executablePath();
+      args = ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"];
+    }
+
     const browser = await puppeteer.launch({
-      headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      executablePath: executablePath,
+      args: args,
+      headless: chromium.headless,
     });
     console.log("Puppeteer Browser launched");
 
@@ -103,7 +114,7 @@ const generateScriptPDF = async (req, res) => {
       return res.status(400).json({ error: "Missing HTML content in request body" });
     }
 
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    await page.setContent(html, { waitUntil: "networkidle2" });
     await page.emulateMediaType("screen");
     console.log("HTML content set.");
 
