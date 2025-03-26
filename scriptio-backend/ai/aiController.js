@@ -3,6 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const puppeteer = require("puppeteer");
 const chromium = require("@sparticuz/chromium");
+const fs = require("fs");
 
 const generateScript = async (req, res) => {
   const { prompt } = req.body;
@@ -86,30 +87,25 @@ const deleteScript = async (req, res) => {
 };
 
 const generateScriptPDF = async (req, res) => {
-  let browser;
   try {
-    const { html } = req.body;
-    if (!html || typeof html !== "string" || html.length < 10) {
-      // Minimum length check
-      return res.status(400).json({
-        error: "Invalid HTML content",
-        received: html ? `Type: ${typeof html}, Length: ${html.length}` : "No HTML received",
-      });
-    }
-
-    const isProduction = process.env.NODE_ENV === "production";
-    browser = await puppeteer.launch({
-      args: ["--disable-dev-shm-usage", "--no-sandbox", ...(isProduction ? chromium.args : [])],
-      executablePath: isProduction ? await chromium.executablePath() : puppeteer.executablePath(),
+    const browser = await puppeteer.launch({
       headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
+    console.log("Puppeteer Browser launched");
 
     const page = await browser.newPage();
+    console.log("New page created.");
 
-    await page.setContent(html, {
-      waitUntil: ["domcontentloaded", "networkidle0"],
-      timeout: 30000,
-    });
+    const { html } = req.body;
+    if (!html) {
+      console.error("No HTML content received!");
+      return res.status(400).json({ error: "Missing HTML content in request body" });
+    }
+
+    await page.setContent(html, { waitUntil: "networkidle0" });
+    await page.emulateMediaType("screen");
+    console.log("HTML content set.");
 
     const pdfBuffer = await page.pdf({
       format: "A4",
@@ -120,23 +116,24 @@ const generateScriptPDF = async (req, res) => {
         left: "20mm",
         right: "20mm",
       },
-      timeout: 60000,
     });
 
+    if (!pdfBuffer || pdfBuffer.length < 100) {
+      throw new Error("Generated PDF is empty or too small");
+    }
+    console.log("PDF generated.");
+
+    await browser.close();
+    console.log("Browser closed.");
+
+    res.setHeader("Content-Disposition", 'attachment; filename="document.pdf"');
     res.setHeader("Content-Type", "application/pdf");
-    res.send(pdfBuffer);
+    res.setHeader("Content-Length", pdfBuffer.length);
+    res.end(pdfBuffer, "binary");
+    console.log("PDF response sent.");
   } catch (error) {
-    console.error("PDF Generation Error Details:", {
-      message: error.message,
-      stack: error.stack,
-      bodyContent: req.body.html?.substring(0, 100),
-    });
-    res.status(500).json({
-      error: "PDF generation failed",
-      details: error.message,
-    });
-  } finally {
-    if (browser) await browser.close();
+    console.error("Error generating PDF:", error);
+    res.status(500).json({ error: "PDF generation failed" });
   }
 };
 
