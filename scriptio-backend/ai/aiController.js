@@ -9,7 +9,21 @@ const generateScript = async (req, res) => {
   const { prompt } = req.body;
 
   try {
-    const script = await getAIScript(prompt);
+    const scriptContent = await getAIScript(prompt);
+    if (!scriptContent) {
+      console.error("No script generated.");
+      return res.status(400).json({ error: "Failed to generate script." });
+    }
+
+    const titleMatch = scriptContent.match(/\*\*Title:\s*"([^"]+)"\*\*/);
+    const scriptTitle = titleMatch ? titleMatch[1] : "Untitled Script";
+
+    const script = {
+      id: `script-${Date.now()}`,
+      title: scriptTitle,
+      content: scriptContent,
+    };
+    console.log("Script received in aiController\n", script);
 
     res.json({ script });
   } catch (error) {

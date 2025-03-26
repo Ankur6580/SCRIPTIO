@@ -50,7 +50,7 @@ const PromptInputOutput = ({ user }) => {
       });
 
       if (response.ok) {
-        const data = await response.json;
+        const data = await response.json();
         console.log("API response:\n", data);
 
         if (!data.script) {
@@ -61,15 +61,15 @@ const PromptInputOutput = ({ user }) => {
           return;
         }
 
-        const generatedScriptData = data.script;
-        const scriptTitle =
-          generatedScriptData?.title || prompt || "Untitled Script";
-        const scriptId = generatedScriptData?.id;
+        const script = data.script.content;
+        const scriptId = data.script.id;
+        const scriptTitle = data.script.title;
 
-        if (!scriptId) {
-          console.error("Generated script missing ID:", generatedScriptData);
-          return;
-        }
+        const generatedScriptData = {
+          id: scriptId,
+          title: scriptTitle,
+          content: script,
+        };
 
         if (!user) {
           setScripts((prev) =>
@@ -90,7 +90,7 @@ const PromptInputOutput = ({ user }) => {
             },
             body: JSON.stringify({
               userID: user.id,
-              title: scriptTitle,
+              title: generatedScriptData.title.trim(),
               script: generatedScriptData.content,
             }),
           });
@@ -103,7 +103,7 @@ const PromptInputOutput = ({ user }) => {
                   ? prev
                   : [...prev, savedData.newScript],
               );
-            }else{
+            } else {
               console.error("Failed to save script:", savedData);
             }
           }
