@@ -40,7 +40,7 @@ const PDFDownloader = ({ contentRef }) => {
         </body>
       </html>
       `;
-    console.log(`HTML content sent to the server:\n${fullHTML}`);
+    // console.log(`HTML content sent to the server:\n${fullHTML}`);
 
     try {
       const response = await fetch(`${backendURL}/api/ai/generatepdf`, {

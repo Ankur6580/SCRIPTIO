@@ -3,28 +3,33 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const puppeteer = require("puppeteer");
 const chromium = require("@sparticuz/chromium");
-const fs = require("fs");
 
 const generateScript = async (req, res) => {
   const { prompt } = req.body;
 
   try {
     const scriptContent = await getAIScript(prompt);
-    if (!scriptContent) {
+    if (!scriptContent || !scriptContent.script) {
       console.error("No script generated.");
       return res.status(400).json({ error: "Failed to generate script." });
     }
 
-    const titleMatch = scriptContent.match(/\*\*Title:\s*"([^"]+)"\*\*/);
-    const scriptTitle = titleMatch ? titleMatch[1] : "Untitled Script";
+    // console.log("Script content:\n", scriptContent.script);
+
+    let titleMatch = scriptContent.script.match(/\*\*Title:\s*"(.+?)"\*\*/);
+    if (!titleMatch) {
+      titleMatch = scriptContent.script.match(/\*\**(.+?)\*\*/);
+    }
+
+    const scriptTitle = titleMatch ? titleMatch[1] : "A Temporary Title for Now";
 
     const script = {
       id: `script-${Date.now()}`,
       title: scriptTitle,
-      content: scriptContent,
+      content: scriptContent.script,
     };
-    console.log("Script received in aiController\n", script);
 
+    // console.log("Script generated and sent successfully\n", script);
     res.json({ script });
   } catch (error) {
     res.status(500).json({ error: error.message });

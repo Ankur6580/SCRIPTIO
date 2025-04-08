@@ -5,7 +5,9 @@ import Script from "./Scripts";
 
 const PromptInputOutput = ({ user }) => {
   const backendURL = import.meta.env.VITE_BACKEND_URL;
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(
+    "Elon musk and SpaceX; video type: shorts; duration: 60 seconds",
+  );
   const [scripts, setScripts] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -40,8 +42,8 @@ const PromptInputOutput = ({ user }) => {
       alert("Please enter a prompt");
       return;
     }
-
     setLoading(true);
+
     try {
       const response = await fetch(`${backendURL}/api/ai/generate`, {
         method: "POST",
@@ -51,7 +53,7 @@ const PromptInputOutput = ({ user }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("API response:\n", data);
+        // console.log("API response:\n", data);
 
         if (!data.script) {
           console.error(
@@ -64,6 +66,8 @@ const PromptInputOutput = ({ user }) => {
         const script = data.script.content;
         const scriptId = data.script.id;
         const scriptTitle = data.script.title;
+
+        // console.log(scriptTitle);
 
         const generatedScriptData = {
           id: scriptId,
@@ -112,7 +116,7 @@ const PromptInputOutput = ({ user }) => {
         console.error("Failed to generate script");
       }
     } catch (error) {
-      console.error("Error generating script:", error);
+      console.error("Error generating script:", error.error);
     } finally {
       setLoading(false);
     }
